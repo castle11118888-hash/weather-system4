@@ -6,7 +6,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>天氣｜版本B4.5.2</title>
+  <title>天氣｜版本B4.5.3</title>
   <style>
     :root{
       --bg:#f4f6fb; --card:#fff; --text:#111827; --muted:#6b7280; --border:#e5e7eb;
@@ -155,7 +155,7 @@ let state = {
   registerName:"",registerEmail:"",registerPassword:"",
   applicationName:"",applicationEmail:"",applicationPassword:"",
   loginError:"",registerError:"",applicationError:"",applicationSuccess:"",infoMessage:"",
-  newItemShift:"早班",newItemCategory:"人員",newItemContent:"",newItemStatus:"pending",newItemPhotoPreview:"",newItemPhotoName:"",
+  newItemDate:today(),newItemShift:"早班",newItemCategory:"人員",newItemContent:"",newItemStatus:"pending",newItemPhotoPreview:"",newItemPhotoName:"",
   newAnnouncementTitle:"",newAnnouncementContent:"",newAnnouncementStore:"all",
   editingItemId:null,editingItemContent:"",
   formsReadFilter:"all",
@@ -561,7 +561,7 @@ async function addItem(){
       photoName = pendingPhotoFile.name || "照片";
     }
     await addDoc(collection(db,"handovers"),{
-      date:state.selectedDate,
+      date:state.newItemDate || state.selectedDate,
       shift:itemShift,
       storeId:effectiveStore(),
       category:state.newItemCategory,
@@ -578,6 +578,7 @@ async function addItem(){
     });
     resetPendingPhoto();
     setState({
+      newItemDate: state.newItemDate || today(),
       newItemShift:itemShift,
       newItemContent:"",
       newItemCategory:"人員",
@@ -770,7 +771,7 @@ function renderLogin(root){
       <div class="card weather-hero">
         <div class="weather-row">
           <div>
-            <div class="badge" style="background:rgba(255,255,255,.16);color:#fff">B4.5.2</div>
+            <div class="badge" style="background:rgba(255,255,255,.16);color:#fff">B4.5.3</div>
             <div style="height:14px"></div>
             <div class="weather-city">今日天氣資訊</div>
             <div class="weather-desc">${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,"0")}/${String(now.getDate()).padStart(2,"0")}（週${weekdays[now.getDay()]}）　${hh}:${mm}</div>
@@ -944,7 +945,13 @@ function renderForms(){
   const items = filteredItems();
   return `
   <div class="card section">
-    <h2>新增交接</h2>
+    <div class="row" style="justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px">
+      <h2 style="margin:0">新增交接</h2>
+      <div class="toolbar" style="margin-left:auto">
+        <label class="small muted" for="newItemDate">交接日期</label>
+        <input class="w180" type="date" id="newItemDate" value="${escapeHtml(state.newItemDate || today())}">
+      </div>
+    </div>
     <div class="form-grid" style="grid-template-columns:140px 1fr 1fr 1fr 140px">
       <select id="newShift">${optionHtml(shifts,state.newItemShift)}</select>
       <select id="newCategory">${optionHtml(categories,state.newItemCategory)}</select>
@@ -1213,7 +1220,7 @@ function renderApp(root){
         ${canManageUsers() ? `
         <div style="height:14px"></div>
         <div class="okbox small">
-          版本 B4.5.2<br>
+          版本 B4.5.3<br>
           ・只有管理員可見改版內容<br>
           ・角色中文顯示<br>
           ・角色儲存修正<br>
@@ -1234,6 +1241,7 @@ function renderApp(root){
           ・重設後可返回網站首頁<br>
           ・首頁新增申請帳號區塊<br>
           ・申請名單 / 帳號審核流程<br>
+          ・新增交接區塊加入日期選單<br>
           ・交接內容不保留前次輸入<br>
         </div>` : ""}
       </div>
@@ -1263,6 +1271,7 @@ function renderApp(root){
       setState({searchText:e.target.value});
     });
   }
+  const newDate = document.getElementById("newItemDate"); if(newDate) newDate.onchange = e => setState({newItemDate:e.target.value});
   const date = document.getElementById("dateInput"); if(date) date.onchange = e => setState({selectedDate:e.target.value});
   const shift = document.getElementById("shiftInput"); if(shift) shift.onchange = e => setState({selectedShift:e.target.value});
   const store = document.getElementById("storeInput"); if(store) store.onchange = e => setState({selectedStore:e.target.value});
