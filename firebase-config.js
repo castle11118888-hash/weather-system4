@@ -12,4 +12,4 @@ export const firebaseConfig = {
   appId: "1:950652925778:web:51303af3c25a6a2cda6c8b",
 };
 
-export const firebaseEnabled = false; // 貼好設定後改成 true
+export const firebaseEnabled = true; // 貼好設定後改成 true
