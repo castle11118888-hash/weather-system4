@@ -1,36 +1,33 @@
-// firebase-config.js
+// firebase-config.js（7.3.5 最簡單穩定版）
 
-// ⭐ 判斷 test / prod
-const isTestEnv = location.hostname.includes("test");
+// 判斷環境
+const isTestEnv =
+  location.hostname.includes("test") ||
+  location.hostname.includes("localhost");
 
-// ⭐ 正式 Firebase（先不用填）
+// 🔥 正式 Firebase（⚠️ 先空著沒關係）
 const firebaseConfigProd = {
-  apiKey: "正式KEY",
-  authDomain: "正式.firebaseapp.com",
-  projectId: "正式ID",
-  storageBucket: "正式.appspot.com",
-  messagingSenderId: "正式",
-  appId: "正式"
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
 };
 
-// ⭐ 測試 Firebase
+// 🔥 測試 Firebase（你現在用的）
 const firebaseConfigTest = {
-  apiKey: "AIzaSyAexaKh3E9WLArIVdY0Wief4hAID9caGMTo",
+  apiKey: "AIzaSyAexaKh3E9WLRIVdY0WieF4hAlD9caGMTo",
   authDomain: "handover-system-test.firebaseapp.com",
   projectId: "handover-system-test",
-  storageBucket: "handover-system-test.appspot.com",
-  messagingSenderId: "912253248594",
-  appId: "1:912253248594:web:5741ad86a391e125e1eb8b"
 };
 
-// ⭐ 自動切換
-export const firebaseConfig = isTestEnv
+// 自動選擇
+const firebaseConfig = isTestEnv
   ? firebaseConfigTest
-  ; firebaseConfigProd;
+  : firebaseConfigProd;
 
-// ⭐ 開關
-export const firebaseEnabled = true;
+// 👉 給 index.html 用（關鍵）
+window.firebaseConfig = firebaseConfig;
+window.firebaseEnabled = true;
 
-// ⭐ Debug
-console.log("🔥 Firebase Project:", firebaseConfig.projectId);
-console.log(isTestEnv ? "🧪 TEST" : "🚀 PROD");
+// Debug
+console.log("🔥 Firebase:", firebaseConfig.projectId);
+console.log("🌍 ENV:", isTestEnv ? "TEST" : "PROD");
